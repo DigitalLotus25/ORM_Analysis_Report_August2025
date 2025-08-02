@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lotus Hyundai - Online Engagement Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0e7ff 100%);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .glass {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-8 space-y-10">
+
+  <h1 class="text-4xl font-bold text-indigo-700 drop-shadow-md text-center">Lotus Hyundai Online Engagement Dashboard</h1>
+
+  <!-- Engagement Summary -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+    <div class="glass p-6">
+      <h2 class="text-lg font-semibold text-center mb-4">Google Reviews</h2>
+      <canvas id="googleChart"></canvas>
+    </div>
+
+    <div class="glass p-6">
+      <h2 class="text-lg font-semibold text-center mb-4">Instagram Engagement</h2>
+      <canvas id="instaChart"></canvas>
+    </div>
+
+    <div class="glass p-6">
+      <h2 class="text-lg font-semibold text-center mb-4">YouTube Engagement Issues</h2>
+      <canvas id="youtubeChart"></canvas>
+    </div>
+
+    <div class="glass p-6">
+      <h2 class="text-lg font-semibold text-center mb-4">Facebook Engagement Issues</h2>
+      <canvas id="facebookChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button onclick="toggleCharts()" class="mt-10 px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition">
+    Toggle: Bar ↔ Pie View
+  </button>
+
+  <!-- Stacked Bar Chart -->
+  <div id="barView" class="glass p-6 mt-6 w-full max-w-7xl">
+    <h2 class="text-2xl font-semibold text-indigo-600 text-center mb-4">Monthly Website Traffic - Stacked Bar</h2>
+    <canvas id="monthlyTrafficBarChart"></canvas>
+  </div>
+
+  <!-- Monthly Pie Charts -->
+  <div id="pieView" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-6 max-w-7xl w-full hidden">
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">January</h3><canvas id="janChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">February</h3><canvas id="febChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">March</h3><canvas id="marChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">April</h3><canvas id="aprChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">May</h3><canvas id="mayChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">June</h3><canvas id="junChart"></canvas></div>
+    <div class="glass p-4"><h3 class="text-center font-semibold mb-2">July</h3><canvas id="julChart"></canvas></div>
+  </div>
+
+  <!-- Blinking Warning Card -->
+<div id="seoWarningCard" class="glass border-2 border-yellow-500 bg-yellow-100 text-black-700 p-6 rounded-xl mt-10 animate-pulse text-center w-full max-w-3xl opacity-0 transition-opacity duration-100">
+  <p class="text-md font-semibold mb-4">
+    ⚠️ <span style="font-weight: bold;">Low SEO </span>found entirely for Lotus Hyundai and affected ad results too in <span style="font-weight: bold;">June</span>.<br>
+    In July, we fixed <span style="font-weight: bold;">onpage SEO</span> for our own website and it started ranking <span style="font-weight: bold;">Higher</span> than before.<br>
+    Want to know our next task for this <span style="font-weight: bold;">August</span> month ?
+  </p>
+  <button onclick="showTaskSection()" class="bg-white text-red-700 font-bold px-6 py-2 rounded-full shadow hover:bg-red-50 transition">
+    Click Here
+  </button>
+</div>
+
+<!-- Task Section Container (Initially Hidden) -->
+<div id="taskRevealWrapper" class="opacity-0 transition-opacity duration-1000">
+  <!-- PLACE your existing <h2> and #tasksSection + chart code here -->
+
+
+  <!-- Tasks Section -->
+  <h2 class="text-3xl font-semibold text-indigo-600 text-center mt-16">What to do to improve our online presence ?</h2>
+  <div id="tasksSection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 max-w-7xl w-full">
+
+    <!-- Card Template -->
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="map-pin" class="text-indigo-600 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-indigo-700 cursor-pointer">Google My Business</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Add videos to profile & reviews</li>
+        <li>Collect atleast 2 reviews per sale (friends, family)</li>
+        <li>Encourage photo reviews</li>
+        <li>Remove fake reviews</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="instagram" class="text-pink-600 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-pink-600 cursor-pointer">Instagram</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Add viral hooks with videos, atleast once a week</li>
+        <li>Try to make Trend related videos, atleast once a week</li>
+        <li>Use #AskLotusHyundai hastag whenever offer post is uploaded</li>
+        <li>Try to upload more videosthan usual</li>
+        <li>Color themes per post type</li>
+        <li>Cross-platform shares with team</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="facebook" class="text-blue-600 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-blue-700 cursor-pointer">Facebook</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Get reviews from team (personal IDs)</li>
+        <li>Attach website link and GMB link to all posts</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="twitter" class="text-sky-500 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-blue-500 cursor-pointer">Twitter (X)</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Use #AskLotusHyundai hastag whenever offer post is uploaded</li>
+        <li>Post text tweets with website links</li>
+        <li>Include GMB links for traffic</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="flame" class="text-orange-600 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-red-600 cursor-pointer">Reddit</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Post FAQs to appear on Google and its Suggested Answers section</li>
+        <li>Post ads (min $5/day)<strong>(optional)</strong></li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="message-square" class="text-rose-500 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-rose-500 cursor-pointer">Quora</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Post Questions and Posts related to hyundai for profile ranking</li>
+        <li>Reply without links for reach</li>
+        <li>Use for low-cost high-quality ads</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="youtube" class="text-red-700 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-red-700 cursor-pointer">YouTube</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Create channel for Mettupalayam</li>
+        <li>Consistent posting with engagement for branding</li>
+      </ul>
+    </div>
+
+    <div class="glass p-5 transition-transform transform opacity-0 translate-y-10" onclick="toggleTask(this)">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="globe" class="text-red-700 w-5 h-5"></i>
+        <h3 class="text-xl font-bold text-red-700 cursor-pointer">Websites & Blogs</h3>
+      </div>
+      <ul class="task-content list-disc list-inside space-y-1 text-gray-800 hidden">
+        <li>Create multiple blog sites to talk about sales, service, testimonials, Q/A's, etc., of Lotus hyundai</li>
+        <li>Consistent posting with engagement to boost online traffic</li>
+      </ul>
+    </div>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    // Charts
+    new Chart(document.getElementById("googleChart"), {
+      type: "pie",
+      data: {
+        labels: ["Lotus (930)", "Chandra (6045)", "Kovai (4235)"],
+        datasets: [{ backgroundColor: ["#ff0000", "#4ade80", "#facc15"], data: [930, 6045, 4235] }]
+      }
+    });
+
+    new Chart(document.getElementById("instaChart"), {
+      type: "pie",
+      data: {
+        labels: ["Lotus (Best)", "Chandra", "Kovai"],
+        datasets: [{ backgroundColor: ["#86efac", "#fcd34d", "#fca5a5"], data: [75, 27, 25] }]
+      }
+    });
+
+    new Chart(document.getElementById("youtubeChart"), {
+      type: "pie",
+      data: {
+        labels: ["Low Engagement", "Ideal"],
+        datasets: [{ backgroundColor: ["#f87171", "#d1d5db"], data: [80, 20] }]
+      }
+    });
+
+    new Chart(document.getElementById("facebookChart"), {
+      type: "pie",
+      data: {
+        labels: ["Needs Improvement", "Ideal"],
+        datasets: [{ backgroundColor: ["#fbbf24", "#d1fae5"], data: [80, 20] }]
+      }
+    });
+
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'];
+    const monthData = {
+      jan: [250, 4, 35, 2, 1, 1],
+      feb: [238, 3, 33, 1, 1, 1],
+      mar: [188, 5, 37, 2, 1, 2],
+      apr: [99, 5, 52, 3, 1, 4],
+      may: [27, 6, 78, 5, 1, 3],
+      jun: [67, 2, 14, 4, 2, 52],
+      jul: [133, 2, 14, 4, 2, 83]
+    };
+    const labels = [
+      "Chandra - Hyundai Motors", "Chandra - HyperLocal",
+      "Kovai - Hyundai Motors", "Kovai - HyperLocal",
+      "Lotus - Hyundai Motors", "Lotus - Own"
+    ];
+    const colors = ["#4f46e5", "#93c5fd", "#10b981", "#a7f3d0", "#fbbf24", "#fcd34d"];
+
+    months.forEach(month => {
+      new Chart(document.getElementById(`${month}Chart`), {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [{
+            data: monthData[month],
+            backgroundColor: colors
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 } } }
+          }
+        }
+      });
+    });
+
+    new Chart(document.getElementById("monthlyTrafficBarChart"), {
+      type: "bar",
+      data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: labels.map((label, i) => ({
+          label: label,
+          data: months.map(m => monthData[m][i]),
+          backgroundColor: colors[i],
+          stack: 'website'
+        }))
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top", labels: { font: { size: 12 } } }
+        },
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Traffic' } }
+        }
+      }
+    });
+
+    function toggleCharts() {
+      document.getElementById('barView').classList.toggle('hidden');
+      document.getElementById('pieView').classList.toggle('hidden');
+    }
+
+    function toggleTask(card) {
+      const content = card.querySelector('.task-content');
+      content.classList.toggle('hidden');
+    }
+
+    window.addEventListener("load", () => {
+      lucide.createIcons();
+      const cards = document.querySelectorAll("#tasksSection > div");
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.remove("opacity-0", "translate-y-10");
+          card.classList.add("opacity-100", "translate-y-0", "duration-700");
+        }, index * 150);
+      });
+    });
+  </script>
+
+  <script>
+  // Show red card after 6 seconds
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("seoWarningCard").classList.remove("opacity-0");
+    }, 6000);
+  });
+
+  // Show task section on click
+  function showTaskSection() {
+    document.getElementById("seoWarningCard").classList.add("hidden");
+    const reveal = document.getElementById("taskRevealWrapper");
+    reveal.classList.remove("opacity-0");
+    reveal.classList.add("opacity-100");
+
+    // Slide in animation for each task card
+    const cards = document.querySelectorAll("#tasksSection > div");
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.remove("opacity-0", "translate-y-10");
+        card.classList.add("opacity-100", "translate-y-0", "duration-700");
+      }, index * 150);
+    });
+  }
+</script>
+</body>
+</html>
